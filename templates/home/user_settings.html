@@ -1,0 +1,152 @@
+
+
+
+{% load django_bootstrap5 %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  {% bootstrap_css %}
+  {% bootstrap_javascript %}
+  <link rel="stylesheet" href="/static/css/user_settings.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css">
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body style="background: #f9f6f1;">
+  {% block content %}
+  <div class="container ">
+    <div id="messagee-{{ forloop.counter }}" class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    {% if messages %}
+  <div class="alert alert-danger" role="alert">
+    <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector("#messagee-{{ forloop.counter }}").remove();
+    }, 2000);
+  </script>     
+{% endif %}
+    {% include 'navbar/navbar.html' %}
+    <form action="{% url 'user_settings' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row gutters">
+        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="account-settings">
+                <div class="user-profile">
+                  <div class="user-avatar">
+                    <div class="image-wrapper">
+                      <img src="{{ user.profile_image.url }}" style="max-width: 200px; max-height: 200px;">
+                      <input type="file" name="profile_image" id="profile_image" accept="image/*" style="opacity:0">
+                      <!-- <i class="fa fa-edit" ></i>
+                      <i class="fa fa-pencil" ></i> -->
+                      <label for="profile_image" class="edit-icon">
+                        <i class="fa fa-edit" ></i>
+                      </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style=" background-color: #6d7f52; border:none;">Update</button>
+                  </div>
+                  <!-- <div class="user-avatar">       
+                    <img src="{{ user.profile_image.url }}" style="max-width: 200px; max-height: 200px;">
+                    <input type="file" name="profile_image" id="profile_image" accept="image/*">
+                   <button type="submit" class="btn btn-primary">Update</button>                   
+                  </div> -->
+                  <h5 class="user-name">{{user.username}}</h5>
+                  <h6 class="user-email">{{user.email}}</h6>
+                </div>
+                <!-- <div class="about">
+                  <h5 class="mb-2 text-primary">About</h5>
+                  <p>I'm Yuki. Full Stack Designer I enjoy creating user-centric, delightful and human experiences.</p>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="row gutters">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                  <h6 style="color: #6d7f52; " class="mb-3">Personal Details</h6>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                  <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name" value="{{ user.first_name }}">
+                 
+                  </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                  <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name" value="{{ user.last_name }}" >
+                  </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                  <div class="form-group">
+                    <label for="eMail">Email</label>
+                    <input type="email" class="form-control" name="eMail" id="eMail" placeholder="Enter email ID" value="{{ user.email }}" readonly style="color: #999;">
+                  </div>
+                </div>
+                
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                  <div class="form-group">
+                    <label for="website">UserName</label>
+                    <input type="url" class="form-control" name="username" id="username" placeholder="Username" value="{{ user.username }}" readonly style="color: #999;">
+                  </div>
+                </div>
+              </div>
+             
+              <div class="row gutters">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                  <div class="text-right">
+                    {{form.as_p}}
+                    <button type="button" id="cancel" name="submit" class="btn btn-secondary" >Cancel</button>
+                    <button type="submit" class="btn btn-primary" style=" background-color: #6d7f52; border:none;">Update</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+      
+
+  </div>
+  {% endblock %}
+  <script>
+    document.getElementById('cancel').addEventListener('click', function() {
+      window.location.href = "{% url 'user_settings' %}";  // Replace 'desired_page' with the actual URL or view name to redirect to
+    });
+  </script>
+<script>
+  document.getElementById('profile_image').addEventListener('change', function() {
+  // Update the image preview when a new image is selected
+  const imgPreview = document.querySelector('.user-avatar img');
+  const file = this.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    imgPreview.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+</script>
+</body>
+</html>

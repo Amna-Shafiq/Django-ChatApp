@@ -1,0 +1,167 @@
+{% extends '/Users/dev/env_blog/blog/templates/base.html' %}
+{% load static %}
+{% block content %}
+<body style="background: #f9f6f1;">
+  {% if connection_id %}
+<div class="container" >
+  {% include 'navbar/navbar.html' %}
+    <div class="row clearfix">
+        <div class="col-lg-12">
+            <div class="card chat-app">
+              <div id="plist" class="people-list">
+                <div class="input-group">                                    
+                </div>
+                {% include 'home/start_chat_sidebar.html' with sidebar_info_data=sidebar_info_data %}
+              </div>        
+                <p id="chat-room-id" style="display: none;">{{ chat_room.id }}</p>               
+                <div class="chat">
+                  <div class="chat-header clearfix">
+                      <div class="row">
+                          <div class="col-lg-6">
+                              <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                                <img src="{{ other_user.profile_image.url }}" style="width: 50px; height: 50px;">
+                              </a>
+                              <div class="chat-about">
+                                  <h6 class="m-b-0">{{other_user.username}}</h6>
+                                  <!-- <small>Last seen: 2 hours ago</small> -->
+                              </div>
+                          </div>                       
+                      </div>
+                  </div>
+                  <div class="chat-history" style="background-color: #F5F5F5	">
+                    <ul id="messages" class="m-b-0" style="max-height: 450px; overflow-y: scroll;"> <!-- Add id="messages" here -->
+                      {% for message in chat_room.messages.all %}
+                      {% if message.user != request.user.user %}    
+                        <li class="clearfix">
+                          <div class="message-data ">
+                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar" style="max-width: 20px; max-height: 20px;">
+                            {{ message.user.username }}
+                            <span class="message-data-time">{{ message.date_added }}</span>
+                          </div>
+                          
+                          <div class="message my-message"> 
+                            {% if message.content %}
+                              {{ message.content }} 
+                            {% endif %}
+                            {% if message.image %}
+                              <img src="{{ message.image }}" alt="image" style="max-width: 200px; max-height: 200px;">
+                            {% endif %}
+                            {% if message.audio %}
+                            <audio controls>
+                              <source src="{{ message.audio}}" type="audio/webm">
+                            </audio>
+                            {% endif %}
+                          </div>   
+                        </li>
+                      {% else %}
+                        <li class="clearfix">
+                          <div class="message-data pull-right">
+                            <span class="message-data-time">{{ message.date_added }}</span>
+                            <span class="message-data-time">Me</span>
+                          </div>
+                          </br>
+                          </br>
+                          <div class="message other-message float-right">
+                            {% if message.content %}
+                              {{ message.content }}  
+                            {% endif %}
+                            {% if message.image %}
+                              <img src="{{ message.image }}" alt="image" style="max-width: 200px; max-height: 200px;">
+                            {% endif %}   
+                            
+                            {% if message.audio %}
+                            <audio controls>
+                              <source src="{{ message.audio}}" type="audio/webm">
+                            </audio>
+                            {% endif %}                           
+                          </div>    
+                        </li>
+                      {% endif %}
+                    {% empty %}
+                      <p>No messages available.</p>
+                    {% endfor %}                  
+                    </ul>
+                  </div>        
+                   <div class="chat-message clearfix">
+                    <form id="form" class="mb-3 chat-form">
+                      <div class="input-group">
+                        <input type="text" name="message" class="form-control" placeholder="Enter your message..." />
+                        <label for="image-input" class="fa fa-paperclip"></label>
+                        <input type="file" id="image-input" accept="image/*" style="display: none;">
+                        <button id="send-image-btn" type="submit" class="btn btn-info btn-rounded" style="margin:2px; background-color: #6d7f52; border: #6d7f52;">Send</button>
+                        <button id="audio-input-btn" class="btn btn-info btn-rounded" style="margin:2px; background-color: #9e538b; border: #6d7f52;">Send Audio</button>
+                      </div>    
+                    </form>  
+                    <button id="record-button" class="btn btn-primary">Record</button>
+                    <button id="stop-button" class="btn btn-primary">Stop</button>
+                    <button id="play-button" class="btn btn-primary">Play</button>
+                  </div>                
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+{% else %}
+<div class="container" >
+  {% include 'navbar/navbar.html' %}
+  <div >
+    <div class="row clearfix">
+      <div class="col-lg-12">
+          <div class="card chat-app">
+            <div id="plist" class="people-list">
+              <div class="input-group">                                    
+              </div>
+              <ul class="list-unstyled chat-list mt-2 mb-0" style="max-height: 580px; overflow-y: scroll;">
+                {% for user in users %}
+                <a href="{% url 'start_chat' connection_id=user.id %}" style="text-decoration: none; color: black;">
+                    <li class="clearfix">
+                      <div class="user-block">
+                        <div class="profile-image">
+                        <img src="{{ user.profile_image.url }}" style="max-width: 20px; max-height: 20px;">
+                        </div>
+                        <div class="user-details">
+                            <div class="name">{{ user.username|capfirst }}</div>                              
+                        </div>
+                        </div>
+                    </li>
+                </a>
+            {% endfor %}                 
+              </ul>
+            </div>
+              <p id="chat-room-id" style="display: none;">{{ chat_room.id }}</p>               
+              <div class="chat">
+                <div class="chat-header clearfix">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                            </a>
+                            <div class="chat-about">
+                                <h6 class="m-b-0"></h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-history" style="background-color: #F5F5F5	">
+                  <ul id="messages" class="m-b-0" style="max-height: 450px; overflow-y: scroll;"> <!-- Add id="messages" here -->                      
+                  </ul>
+                </div>                                   
+            </div>
+        </div>
+    </div>
+</div>
+   
+</div>
+</div>
+{% endif %}
+<script src="{% static 'js/start_chat.js'%}"data-username="{{ request.user.username }}"></script>
+</body>
+{% endblock %}
+
+
+
+
+
+
+
+

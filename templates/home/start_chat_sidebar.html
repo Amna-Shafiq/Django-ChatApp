@@ -1,0 +1,50 @@
+<ul class="list-unstyled chat-list mt-2 mb-0" style="max-height: 580px; overflow-y: scroll;">
+  {% for chat_room_data in sidebar_info_data %}
+    <a href="{% url 'start_chat' connection_id=chat_room_data.other_user_id %}" style="text-decoration: none; color: black;">
+      <li class="clearfix">
+        <div class="user-block">
+          <div class="profile-image">
+            <img src="{{ chat_room_data.other_user_profile_image }}" >
+          </div>
+          <div class="user-details">
+          <div class="name-timestamp">
+            <div class="name">{{ chat_room_data.other_user|capfirst }}</div>
+            {% load tz %}
+            <div class="timestamp">                                                               
+              {% if chat_room_data.last_message_timestamp %}
+              {% now "Y-m-d" as current_date %}
+              {% with current_time=chat_room_data.last_message_timestamp|date:"H:i" %}
+                {% with yesterday_date=current_date|date:"Y-m-d"|add:"-1 days" %}
+                  {% with message_date=chat_room_data.last_message_timestamp|date:"Y-m-d" %}
+                    {% if message_date == current_date %}
+                        {{ chat_room_data.last_message_timestamp|date:"H:i A" }}
+                      {% elif message_date == yesterday_date %}
+                        Yesterday
+                      {% else %}
+                        {{ chat_room_data.last_message_timestamp|date:"M d, Y" }}
+                      {% endif %}
+                    {% endwith %}
+                  {% endwith %}
+                {% endwith %}
+              {% else %}
+                -
+              {% endif %}
+            </div>
+          </div>
+            
+            <div class="message-details">
+              <div class="last-message">
+                {% if chat_room_data.last_message %}
+                {{ chat_room_data.last_message|slice:":17" }}
+                {% if chat_room_data.last_message|length > 17 %}...{% endif %}
+                {% else %}
+                  No messages
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    </a>
+  {% endfor %}
+</ul>

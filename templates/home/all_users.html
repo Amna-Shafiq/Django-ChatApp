@@ -1,0 +1,94 @@
+{% load django_bootstrap5 %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <title>All Users</title>
+    {% bootstrap_css %} {% bootstrap_javascript %} {% load static %}
+    <style>
+      
+      .user-card {
+        padding: 1rem;
+        border: 1px solid #ccc;
+        margin-bottom: 1rem;
+      }
+      .user-card h5 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+      }
+      .user-card .btn {
+        margin-top: 0.5rem;
+      }
+    </style>
+  </head>
+
+  <body style="background: #f9f6f1">
+    <div class="container">
+      {% include 'navbar/navbar.html' %}
+      <!-- Search bar -->
+      <div class="row mb-4">
+        <div class="col-lg-6 offset-lg-3">
+          <input
+            type="text"
+            id="searchInput"
+            class="form-control"
+            placeholder="Search users"
+          />
+        </div>
+      </div>
+
+      <!-- User cards -->
+      <div class="row" id="userCards">
+        {% for user in users %}
+
+        <div class="col-sm-6 col-md-4 col-lg-3">
+          <div class="user-card">
+            <div
+              class="image-container"
+              style="width: 17rem; height: 20rem; overflow: hidden"
+            >
+              <img
+                src="{{ user.profile_image.url }}"
+                class="user-image"
+                style="
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  object-position: center;
+                "
+              />
+            </div>
+            <h5 style="font-family: Muli-SemiBold">{{ user.username }}</h5>
+            <a
+              href="{% url 'start_chat' connection_id=user.id %}"
+              class="btn btn-sm btn-block"
+              style="
+                font-family: Muli-SemiBold;
+                font-size: 15px;
+                background-color: #6d7f52;
+                color: white;
+                border-radius: 0;
+              "
+            >
+              Chat with me</a
+            >
+          </div>
+        </div>
+
+        {% endfor %}
+      </div>
+    </div>
+    
+  </body>
+</html>
+<script src="{% static 'js/user_search.js' %}"></script>
